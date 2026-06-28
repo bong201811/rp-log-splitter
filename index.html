@@ -137,7 +137,7 @@
                 toast._hide = setTimeout(() => toast.classList.remove('show'), duration);
             }
 
-            // ===== 정리 함수 (대사 파이프 보호) =====
+            // ===== 정리 함수 (OOC 블록 통째로 제거) =====
             function cleanText(text) {
                 let t = text;
 
@@ -149,21 +149,8 @@
                 }
 
                 if (cleanOOC.checked) {
-                    // 1. OOC 헤더 제거
-                    t = t.replace(/\*\*OOC:.*?\*\*/g, '');
-
-                    // 2. 대괄호 블록 제거 (턴/날짜 보호)
-                    t = t.replace(/\[(?!\s*#\d+\s*|\s*\d{4}[년.-])[^\]]*\]/g, '');
-
-                    // 3. Call: 라인 제거
-                    t = t.replace(/^Call:.*$/gm, '');
-
-                    // 4. 슬래시 설명 제거
-                    t = t.replace(/^\/\s*[^\/\n]*(?:\/\s*[^\/\n]*)*$/gm, '');
-
-                    // 5. 파이프 태그 제거 (대사 파이프는 보호)
-                    //    - "| " 다음에 따옴표(")나 작은따옴표(')가 오면 대사로 간주하고 유지
-                    t = t.replace(/\s*\|\s*(?![ \t]*["'])[^\|\n]*/g, '');
+                    // OOC 블록 통째로 제거 (여러 줄 포함)
+                    t = t.replace(/\*\*OOC:[\s\S]*?\*\*/g, '');
                 }
 
                 t = t.replace(/\n{3,}/g, '\n\n');
