@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,261 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>RP 로그 스플리터</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7fa;
-            padding: 16px 12px 120px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: #1e293b;
-        }
-        h1 {
-            font-size: 22px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .sub {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 16px;
-            border-left: 3px solid #3b82f6;
-            padding-left: 12px;
-        }
-        .card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 20px 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 16px;
-            border: 1px solid #e9edf2;
-        }
-        .upload-area {
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 28px 12px;
-            text-align: center;
-            color: #475569;
-            font-size: 15px;
-            transition: 0.2s;
-            background: #fafbfc;
-            cursor: pointer;
-        }
-        .upload-area.dragover {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
-        .upload-area input {
-            display: none;
-        }
-        .badge {
-            display: inline-block;
-            background: #dbeafe;
-            color: #1e4d8c;
-            font-size: 12px;
-            padding: 2px 10px;
-            border-radius: 30px;
-            font-weight: 600;
-        }
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .flex-row label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-            background: #f1f4f9;
-            padding: 6px 14px 6px 10px;
-            border-radius: 30px;
-            cursor: pointer;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 12px;
-            font-size: 14px;
-        }
-        .stats div {
-            background: #f8fafc;
-            padding: 10px 8px;
-            border-radius: 14px;
-            text-align: center;
-        }
-        .stats .num {
-            font-weight: 700;
-            font-size: 18px;
-            color: #0f172a;
-        }
-        .search-box {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 6px 0 4px;
-        }
-        .search-box input {
-            flex: 1;
-            padding: 12px 14px;
-            border: 1px solid #d1d9e6;
-            border-radius: 40px;
-            font-size: 15px;
-            background: white;
-            min-width: 120px;
-        }
-        .search-box input:focus {
-            outline: 2px solid #3b82f6;
-            border-color: transparent;
-        }
-        .btn {
-            background: #eef2f6;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e293b;
-            cursor: pointer;
-            transition: 0.15s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            touch-action: manipulation;
-        }
-        .btn:active {
-            transform: scale(0.96);
-        }
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-        }
-        .btn-success {
-            background: #22c55e;
-            color: white;
-        }
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1.5px solid #cbd5e1;
-        }
-        .btn:disabled {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-        .viewer {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 16px;
-            max-height: 400px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-            font-size: 15px;
-            line-height: 1.6;
-            border: 1px solid #e9edf2;
-            font-family: 'SF Mono', 'Courier New', monospace;
-            margin-top: 8px;
-        }
-        .viewer .highlight-search {
-            background: #fef08a;
-            border-radius: 4px;
-        }
-        .viewer .marker-start {
-            background: #bfdbfe;
-            border-left: 4px solid #2563eb;
-            padding-left: 4px;
-        }
-        .viewer .marker-end {
-            background: #fecaca;
-            border-left: 4px solid #dc2626;
-            padding-left: 4px;
-        }
-        .viewer .range-preview {
-            background: #e9edf2;
-            border-radius: 6px;
-            padding: 0 4px;
-        }
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 12px 16px 20px;
-            border-top: 1px solid #e2e8f0;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .bottom-bar .row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .bottom-bar .row .btn {
-            flex: 1;
-            justify-content: center;
-            min-width: 60px;
-        }
-        .file-name {
-            font-size: 14px;
-            color: #475569;
-            margin-top: 6px;
-            word-break: break-all;
-        }
-        .toast {
-            background: #0f172a;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-size: 14px;
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: 0.25s;
-            pointer-events: none;
-            white-space: nowrap;
-            z-index: 999;
-        }
-        .toast.show {
-            opacity: 1;
-        }
-        @media (max-width: 480px) {
-            .stats {
-                grid-template-columns: 1fr 1fr;
-            }
-            .bottom-bar .row .btn {
-                font-size: 12px;
-                padding: 8px 10px;
-            }
-        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;background:#f5f7fa;padding:16px 12px 140px;min-height:100vh;color:#1e293b}
+        h1{font-size:22px;font-weight:700;margin-bottom:6px}
+        .sub{font-size:14px;color:#64748b;margin-bottom:16px;border-left:3px solid #3b82f6;padding-left:12px}
+        .card{background:#ffffff;border-radius:20px;padding:20px 16px;box-shadow:0 4px 12px rgba(0,0,0,0.05);margin-bottom:16px;border:1px solid #e9edf2}
+        .upload-area{border:2px dashed #cbd5e1;border-radius:16px;padding:28px 12px;text-align:center;color:#475569;font-size:15px;transition:0.2s;background:#fafbfc;cursor:pointer}
+        .upload-area.dragover{border-color:#3b82f6;background:#eff6ff}
+        .upload-area input{display:none}
+        .flex-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+        .flex-row label{display:flex;align-items:center;gap:6px;font-size:14px;background:#f1f4f9;padding:6px 14px 6px 10px;border-radius:30px;cursor:pointer}
+        .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;font-size:14px}
+        .stats div{background:#f8fafc;padding:10px 8px;border-radius:14px;text-align:center}
+        .stats .num{font-weight:700;font-size:18px;color:#0f172a}
+        .search-box{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 4px}
+        .search-box input{flex:1;padding:12px 14px;border:1px solid #d1d9e6;border-radius:40px;font-size:15px;background:white;min-width:120px}
+        .search-box input:focus{outline:2px solid #3b82f6;border-color:transparent}
+        .btn{background:#eef2f6;border:none;padding:10px 16px;border-radius:40px;font-size:14px;font-weight:600;color:#1e293b;cursor:pointer;transition:0.15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;touch-action:manipulation}
+        .btn:active{transform:scale(0.96)}
+        .btn-primary{background:#3b82f6;color:white}
+        .btn-success{background:#22c55e;color:white}
+        .btn-danger{background:#ef4444;color:white}
+        .btn-warning{background:#f59e0b;color:white}
+        .btn-outline{background:transparent;border:1.5px solid #cbd5e1}
+        .viewer{background:#ffffff;border-radius:16px;padding:16px;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:15px;line-height:1.8;border:1px solid #e9edf2;font-family:'SF Mono','Courier New',monospace;margin-top:8px}
+        .viewer .highlight-search{background:#fef08a;border-radius:4px;padding:0 2px}
+        .viewer .marker-start{background:#bfdbfe;border-left:4px solid #2563eb;padding:2px 6px;border-radius:4px;font-weight:bold;color:#1e4d8c}
+        .viewer .marker-end{background:#fecaca;border-left:4px solid #dc2626;padding:2px 6px;border-radius:4px;font-weight:bold;color:#991b1b}
+        .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:12px 16px 20px;border-top:1px solid #e2e8f0;box-shadow:0 -4px 12px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:8px;max-width:600px;margin:0 auto}
+        .bottom-bar .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+        .bottom-bar .row .btn{flex:1;justify-content:center;min-width:60px}
+        .file-name{font-size:14px;color:#475569;margin-top:6px;word-break:break-all}
+        .toast{background:#0f172a;color:white;padding:10px 18px;border-radius:40px;font-size:14px;position:fixed;bottom:100px;left:50%;transform:translateX(-50%);opacity:0;transition:0.25s;pointer-events:none;white-space:nowrap;z-index:999}
+        .toast.show{opacity:1}
+        @media(max-width:480px){.stats{grid-template-columns:1fr 1fr}.bottom-bar .row .btn{font-size:12px;padding:8px 10px}}
     </style>
 </head>
 <body>
@@ -268,7 +46,6 @@
     <h1>📄 RP 로그 스플리터</h1>
     <div class="sub">🧹 OOC 제거 + 턴 검색 + 범위 추출</div>
 
-    <!-- 업로드 -->
     <div class="card">
         <div class="upload-area" id="uploadArea">
             <label for="fileInput" style="display:block;cursor:pointer;padding:10px;">
@@ -290,10 +67,9 @@
         <button class="btn btn-primary" id="applyCleanBtn" style="width:100%;margin-top:12px;justify-content:center;">✨ 정리 적용하기</button>
     </div>
 
-    <!-- 검색 & 뷰어 -->
     <div class="card" style="flex:1;">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder='🔍 검색 (예: t30, 40턴, "OOC")' />
+            <input type="text" id="searchInput" placeholder='🔍 검색 (예: t30, 40턴)' />
             <button class="btn" id="searchPrevBtn">◀</button>
             <button class="btn" id="searchNextBtn">▶</button>
             <button class="btn btn-outline" id="searchClearBtn">✕</button>
@@ -306,7 +82,6 @@
         </div>
     </div>
 
-    <!-- 하단 고정 바 -->
     <div class="bottom-bar">
         <div class="row">
             <button class="btn btn-primary" id="markStartBtn">🔵 시작</button>
@@ -325,7 +100,6 @@
 
     <script>
         (function() {
-            // ===== 상태 =====
             let rawText = '';
             let cleanedText = '';
             let displayText = '';
@@ -333,7 +107,6 @@
             let searchResults = [];
             let searchIdx = 0;
 
-            // DOM refs
             const fileInput = document.getElementById('fileInput');
             const uploadArea = document.getElementById('uploadArea');
             const fileName = document.getElementById('fileName');
@@ -354,12 +127,9 @@
             const startInfo = document.getElementById('startInfo');
             const endInfo = document.getElementById('endInfo');
             const toast = document.getElementById('toast');
-
-            // 체크박스
             const cleanNoise = document.getElementById('cleanNoise');
             const cleanOOC = document.getElementById('cleanOOC');
 
-            // ===== 유틸 =====
             function showToast(msg, duration = 2000) {
                 toast.textContent = msg;
                 toast.classList.add('show');
@@ -367,66 +137,73 @@
                 toast._hide = setTimeout(() => toast.classList.remove('show'), duration);
             }
 
-            // ===== 정리 함수 =====
+            // ===== 정리 함수 (턴/날짜 보호) =====
             function cleanText(text) {
                 let t = text;
+
                 if (cleanNoise.checked) {
-                    // URL 제거
                     t = t.replace(/https?:\/\/[^\s]+/g, '');
-                    // 마크다운 이미지
                     t = t.replace(/!\[.*?\]\(.*?\)/g, '');
-                    // 일반 이미지 태그
                     t = t.replace(/<img[^>]*>/g, '');
-                    // 주석 (// 한줄)
                     t = t.replace(/\/\/.*$/gm, '');
                 }
+
                 if (cleanOOC.checked) {
-                    // OOC 헤더
+                    // 1. OOC 헤더만 제거 (굵은 글씨 + "OOC:"로 시작)
                     t = t.replace(/\*\*OOC:.*?\*\*/g, '');
-                    // 대괄호 블록 (여러 줄)
-                    t = t.replace(/\[[^\]]*\][\s\S]*?(?=\n\[|\n\*\*|$)/g, '');
-                    // 슬래시 설명 제거
-                    t = t.replace(/\/\s*[^\/\n]*(?:\/\s*[^\/\n]*)*/g, '');
-                    // 파이프 태그
-                    t = t.replace(/\|[^\|\n]*/g, '');
-                    // Call: 라인
-                    t = t.replace(/Call:.*$/gm, '');
+
+                    // 2. 대괄호 블록 제거 (턴 표시 [#3]와 날짜 패턴은 보호)
+                    t = t.replace(/\[(?!\s*#\d+\s*|\s*\d{4}[년.-])[^\]]*\]/g, '');
+
+                    // 3. Call: 라인 제거
+                    t = t.replace(/^Call:.*$/gm, '');
+
+                    // 4. 슬래시 설명 제거 (줄 단위)
+                    t = t.replace(/^\/\s*[^\/\n]*(?:\/\s*[^\/\n]*)*$/gm, '');
+
+                    // 5. 파이프 태그 제거 (날짜/시간 형식은 보호)
+                    t = t.replace(/\s*\|\s*(?![0-9]{4}[년.-])[^\|\n]*/g, '');
                 }
-                // 연속 줄바꿈 정리
+
                 t = t.replace(/\n{3,}/g, '\n\n');
                 return t.trim();
             }
 
             // ===== 렌더링 =====
-            function render(text, highlightIdx = null) {
+            function render(text) {
                 if (!text) {
                     viewer.innerHTML = '<span style="color:#94a3b8;">📄 내용이 없습니다.</span>';
                     return;
                 }
-                let html = escapeHtml(text);
+
+                let html = text
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+
                 // 검색 하이라이트
-                if (searchResults.length > 0 && highlightIdx !== null && highlightIdx >= 0 && highlightIdx < searchResults
-                    .length) {
-                    const keyword = searchInput.value.trim();
-                    if (keyword) {
-                        const regex = new RegExp(escapeRegex(keyword), 'gi');
-                        html = html.replace(regex, match => `<span class="highlight-search">${match}</span>`);
-                    }
+                const keyword = searchInput.value.trim();
+                if (keyword && searchResults.length > 0) {
+                    const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+                    html = html.replace(regex, match => `<span class="highlight-search">${match}</span>`);
                 }
+
+                // 🔵 시작 마커
+                if (markers.start !== null && markers.start < html.length) {
+                    const pos = markers.start;
+                    html = html.slice(0, pos) + `<span class="marker-start">▶ START</span>` + html.slice(pos);
+                }
+
+                // 🔴 끝 마커
+                if (markers.end !== null && markers.end < html.length) {
+                    const pos = markers.end;
+                    html = html.slice(0, pos) + `<span class="marker-end">◀ END</span>` + html.slice(pos);
+                }
+
                 viewer.innerHTML = html;
             }
 
-            function escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-
-            function escapeRegex(str) {
-                return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            }
-
-            // ===== 파일 읽기 =====
+            // ===== 파일 처리 =====
             function handleFile(file) {
                 if (!file) return;
                 fileName.textContent = `📎 ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
@@ -434,29 +211,30 @@
                 reader.onload = function(e) {
                     rawText = e.target.result;
                     applyClean();
+                    showToast('✅ 파일 로드 완료!');
+                };
+                reader.onerror = function() {
+                    showToast('❌ 파일 읽기 실패');
                 };
                 reader.readAsText(file);
             }
 
             function applyClean() {
-                if (!rawText) return;
+                if (!rawText) {
+                    showToast('⚠️ 파일을 먼저 업로드하세요.');
+                    return;
+                }
                 cleanedText = cleanText(rawText);
                 displayText = cleanedText;
-                updateStats();
+                origLen.textContent = rawText.length.toLocaleString();
+                cleanLen.textContent = cleanedText.length.toLocaleString();
+                removedLen.textContent = (rawText.length - cleanedText.length).toLocaleString();
                 render(displayText);
                 resetMarkers();
                 searchResults = [];
                 searchIdx = 0;
-                updateSearchInfo();
+                searchResultInfo.textContent = '검색 결과: 0개';
                 showToast('✅ 정리 완료!');
-            }
-
-            function updateStats() {
-                const orig = rawText ? rawText.length : 0;
-                const clean = cleanedText ? cleanedText.length : 0;
-                origLen.textContent = orig.toLocaleString();
-                cleanLen.textContent = clean.toLocaleString();
-                removedLen.textContent = (orig - clean).toLocaleString();
             }
 
             // ===== 검색 =====
@@ -465,15 +243,15 @@
                 if (!keyword || !displayText) {
                     searchResults = [];
                     searchIdx = 0;
-                    updateSearchInfo();
+                    searchResultInfo.textContent = '검색 결과: 0개';
                     render(displayText);
                     return;
                 }
-                const regex = new RegExp(escapeRegex(keyword), 'gi');
+                const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
                 const matches = [...displayText.matchAll(regex)];
                 searchResults = matches.map(m => m.index);
                 searchIdx = 0;
-                updateSearchInfo();
+                searchResultInfo.textContent = `검색 결과: ${searchResults.length}개`;
                 if (searchResults.length > 0) {
                     jumpToSearch(0);
                 } else {
@@ -488,22 +266,11 @@
                 if (idx >= searchResults.length) idx = searchResults.length - 1;
                 searchIdx = idx;
                 const pos = searchResults[idx];
-                // 대략적인 위치로 스크롤 (viewer의 스크롤)
-                const viewerEl = viewer;
-                const text = displayText;
-                // 문자 인덱스로 비율 계산
-                const ratio = pos / text.length;
-                viewerEl.scrollTop = ratio * (viewerEl.scrollHeight - viewerEl.clientHeight);
-                // 렌더링
-                render(displayText, idx);
-                updateSearchInfo();
-                showToast(`🔍 ${idx+1}/${searchResults.length} 번째 검색 결과`);
-            }
-
-            function updateSearchInfo() {
-                const total = searchResults.length;
-                const cur = total > 0 ? searchIdx + 1 : 0;
-                searchResultInfo.textContent = `검색 결과: ${total}개${total > 0 ? ` (${cur}/${total})` : ''}`;
+                const ratio = pos / displayText.length;
+                viewer.scrollTop = ratio * (viewer.scrollHeight - viewer.clientHeight);
+                render(displayText);
+                searchResultInfo.textContent = `검색 결과: ${searchResults.length}개 (${idx+1}/${searchResults.length})`;
+                showToast(`🔍 ${idx+1}/${searchResults.length} 번째`);
             }
 
             // ===== 마커 =====
@@ -512,31 +279,26 @@
                     showToast('⚠️ 텍스트가 없습니다.');
                     return;
                 }
-                // 현재 스크롤 위치 기준으로 대략적인 문자 인덱스 계산
-                const viewerEl = viewer;
-                const ratio = viewerEl.scrollTop / (viewerEl.scrollHeight - viewerEl.clientHeight || 1);
+                const ratio = viewer.scrollTop / (viewer.scrollHeight - viewer.clientHeight || 1);
                 const idx = Math.floor(ratio * displayText.length);
                 markers[type] = Math.min(Math.max(idx, 0), displayText.length - 1);
-                updateMarkerInfo();
+                startInfo.textContent = markers.start !== null ? `📍 ${markers.start}` : '없음';
+                endInfo.textContent = markers.end !== null ? `📍 ${markers.end}` : '없음';
                 render(displayText);
-                showToast(`✅ ${type === 'start' ? '시작' : '끝'} 마커 설정됨 (약 ${Math.floor(idx/displayText.length*100)}%)`);
+                showToast(`✅ ${type === 'start' ? '시작' : '끝'} 마커 설정`);
             }
 
             function resetMarkers() {
                 markers = { start: null, end: null };
-                updateMarkerInfo();
+                startInfo.textContent = '없음';
+                endInfo.textContent = '없음';
                 render(displayText);
-            }
-
-            function updateMarkerInfo() {
-                startInfo.textContent = markers.start !== null ? `📍 ${markers.start}` : '없음';
-                endInfo.textContent = markers.end !== null ? `📍 ${markers.end}` : '없음';
             }
 
             // ===== 추출 =====
             function extractRange() {
                 if (markers.start === null || markers.end === null) {
-                    showToast('⚠️ 시작과 끝 마커를 먼저 설정해주세요.');
+                    showToast('⚠️ 시작과 끝 마커를 먼저 설정하세요.');
                     return;
                 }
                 if (!displayText) {
@@ -550,30 +312,26 @@
                     showToast('⚠️ 선택한 범위가 비어있습니다.');
                     return;
                 }
-                // 다운로드
                 const blob = new Blob([extracted], { type: 'text/plain;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                const fname = `extracted_${s}-${e}.txt`;
-                a.download = fname;
+                a.download = `extracted_${s}-${e}.txt`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                showToast(`✅ ${fname} 다운로드 완료! (${(extracted.length/1024).toFixed(1)} KB)`);
+                showToast(`✅ 추출 완료! (${(extracted.length/1024).toFixed(1)} KB)`);
             }
 
-            // ===== 이벤트 바인딩 =====
-            // 파일 업로드 (수정된 부분: label과 input 연결)
+            // ===== 이벤트 =====
             fileInput.addEventListener('change', function(e) {
                 if (this.files && this.files[0]) {
                     handleFile(this.files[0]);
                 }
-                this.value = ''; // 같은 파일 다시 선택 가능하게
+                this.value = '';
             });
 
-            // 드래그 앤 드롭 지원
             uploadArea.addEventListener('dragover', (e) => { e.preventDefault();
                 uploadArea.classList.add('dragover'); });
             uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
@@ -583,44 +341,31 @@
                 if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
             });
 
-            // 정리 적용
             applyCleanBtn.addEventListener('click', applyClean);
-
-            // 검색
             searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
-            searchPrevBtn.addEventListener('click', () => {
-                if (searchResults.length) jumpToSearch(searchIdx - 1);
-            });
-            searchNextBtn.addEventListener('click', () => {
-                if (searchResults.length) jumpToSearch(searchIdx + 1);
-            });
+            searchPrevBtn.addEventListener('click', () => { if (searchResults.length) jumpToSearch(searchIdx - 1); });
+            searchNextBtn.addEventListener('click', () => { if (searchResults.length) jumpToSearch(searchIdx + 1); });
             searchClearBtn.addEventListener('click', () => {
                 searchInput.value = '';
                 searchResults = [];
                 searchIdx = 0;
-                updateSearchInfo();
+                searchResultInfo.textContent = '검색 결과: 0개';
                 render(displayText);
             });
-
-            // 마커
             markStartBtn.addEventListener('click', () => setMarker('start'));
             markEndBtn.addEventListener('click', () => setMarker('end'));
             resetMarkersBtn.addEventListener('click', resetMarkers);
-
-            // 추출
             extractBtn.addEventListener('click', extractRange);
-
-            // 초기화
-            resetMarkers();
-            updateStats();
-
-            // 추가: 체크박스 변경 시 자동 적용
             cleanNoise.addEventListener('change', applyClean);
             cleanOOC.addEventListener('change', applyClean);
 
-            console.log('✅ RP 로그 스플리터 로드 완료!');
+            resetMarkers();
+            origLen.textContent = '0';
+            cleanLen.textContent = '0';
+            removedLen.textContent = '0';
+            showToast('🚀 준비 완료!');
+            console.log('✅ RP 로그 스플리터 로드됨');
         })();
     </script>
 </body>
 </html>
-```
