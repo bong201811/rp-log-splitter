@@ -1,487 +1,626 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RP 로그 스플리터</title>
-<style>
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-}
-body {
-font-family: system-ui, sans-serif;
-background: #f5f7fa;
-padding: 16px;
-padding-bottom: 140px;
-}
-.card {
-background: white;
-border-radius: 16px;
-padding: 20px;
-margin-bottom: 16px;
-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-border: 1px solid #e9edf2;
-}
-.upload-area {
-border: 2px dashed #cbd5e1;
-border-radius: 12px;
-padding: 32px 16px;
-text-align: center;
-cursor: pointer;
-background: #fafbfc;
-transition: 0.2s;
-}
-.upload-area:active {
-background: #eef2f6;
-}
-.upload-area input {
-display: none;
-}
-.btn {
-background: #eef2f6;
-border: none;
-padding: 12px 20px;
-border-radius: 40px;
-font-size: 15px;
-font-weight: 600;
-cursor: pointer;
-transition: 0.15s;
-touch-action: manipulation;
-}
-.btn:active {
-transform: scale(0.95);
-}
-.btn-primary {
-background: #3b82f6;
-color: white;
-}
-.btn-success {
-background: #22c55e;
-color: white;
-}
-.btn-danger {
-background: #ef4444;
-color: white;
-}
-.btn-warning {
-background: #f59e0b;
-color: white;
-}
-.viewer {
-background: #f8fafc;
-border-radius: 12px;
-padding: 16px;
-max-height: 350px;
-overflow-y: auto;
-white-space: pre-wrap;
-font-size: 14px;
-line-height: 1.6;
-border: 1px solid #e9edf2;
-margin-top: 12px;
-font-family: monospace;
-}
-.search-box {
-display: flex;
-gap: 8px;
-margin: 10px 0;
-flex-wrap: wrap;
-}
-.search-box input {
-flex: 1;
-padding: 12px 14px;
-border: 1px solid #d1d9e6;
-border-radius: 40px;
-font-size: 15px;
-min-width: 100px;
-}
-.bottom-bar {
-position: fixed;
-bottom: 0;
-left: 0;
-right: 0;
-background: white;
-padding: 12px 16px 20px;
-border-top: 1px solid #e2e8f0;
-display: flex;
-flex-direction: column;
-gap: 8px;
-}
-.bottom-bar .row {
-display: flex;
-gap: 8px;
-flex-wrap: wrap;
-justify-content: center;
-}
-.bottom-bar .row .btn {
-flex: 1;
-justify-content: center;
-min-width: 60px;
-text-align: center;
-}
-.stats {
-display: flex;
-gap: 12px;
-font-size: 14px;
-margin-top: 10px;
-flex-wrap: wrap;
-}
-.stats span {
-background: #f1f4f9;
-padding: 4px 12px;
-border-radius: 30px;
-}
-.label {
-font-size: 13px;
-color: #64748b;
-margin-top: 6px;
-}
-.flex-row {
-display: flex;
-gap: 12px;
-flex-wrap: wrap;
-margin-top: 10px;
-}
-.flex-row label {
-display: flex;
-align-items: center;
-gap: 6px;
-font-size: 14px;
-background: #f1f4f9;
-padding: 6px 14px;
-border-radius: 30px;
-}
-.highlight {
-background: #fef08a;
-border-radius: 4px;
-}
-.marker-start {
-background: #bfdbfe;
-border-left: 3px solid #2563eb;
-}
-.marker-end {
-background: #fecaca;
-border-left: 3px solid #dc2626;
-}
-.toast {
-background: #0f172a;
-color: white;
-padding: 10px 20px;
-border-radius: 40px;
-font-size: 14px;
-position: fixed;
-bottom: 120px;
-left: 50%;
-transform: translateX(-50%);
-opacity: 0;
-transition: 0.3s;
-pointer-events: none;
-z-index: 999;
-white-space: nowrap;
-}
-.toast.show {
-opacity: 1;
-}
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>RP 로그 스플리터</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            padding: 16px 12px 120px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #1e293b;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .sub {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 12px;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 16px;
+            border: 1px solid #e9edf2;
+        }
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 28px 12px;
+            text-align: center;
+            color: #475569;
+            font-size: 15px;
+            transition: 0.2s;
+            background: #fafbfc;
+            cursor: pointer;
+        }
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .upload-area input {
+            display: none;
+        }
+        .badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e4d8c;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .flex-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            background: #f1f4f9;
+            padding: 6px 14px 6px 10px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+        .stats div {
+            background: #f8fafc;
+            padding: 10px 8px;
+            border-radius: 14px;
+            text-align: center;
+        }
+        .stats .num {
+            font-weight: 700;
+            font-size: 18px;
+            color: #0f172a;
+        }
+        .search-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 6px 0 4px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 1px solid #d1d9e6;
+            border-radius: 40px;
+            font-size: 15px;
+            background: white;
+            min-width: 120px;
+        }
+        .search-box input:focus {
+            outline: 2px solid #3b82f6;
+            border-color: transparent;
+        }
+        .btn {
+            background: #eef2f6;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            touch-action: manipulation;
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #cbd5e1;
+        }
+        .btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .viewer {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 15px;
+            line-height: 1.6;
+            border: 1px solid #e9edf2;
+            font-family: 'SF Mono', 'Courier New', monospace;
+            margin-top: 8px;
+        }
+        .viewer .highlight-search {
+            background: #fef08a;
+            border-radius: 4px;
+        }
+        .viewer .marker-start {
+            background: #bfdbfe;
+            border-left: 4px solid #2563eb;
+            padding-left: 4px;
+        }
+        .viewer .marker-end {
+            background: #fecaca;
+            border-left: 4px solid #dc2626;
+            padding-left: 4px;
+        }
+        .viewer .range-preview {
+            background: #e9edf2;
+            border-radius: 6px;
+            padding: 0 4px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 16px 20px;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .bottom-bar .row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .bottom-bar .row .btn {
+            flex: 1;
+            justify-content: center;
+            min-width: 60px;
+        }
+        .file-name {
+            font-size: 14px;
+            color: #475569;
+            margin-top: 6px;
+            word-break: break-all;
+        }
+        .toast {
+            background: #0f172a;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: 0.25s;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .bottom-bar .row .btn {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<h1>📄 RP 로그 스플리터</h1>
-<p style="color:#64748b;margin-bottom:16px;">🧹 OOC 제거 + 턴 검색 + 범위 추출</p>
+    <h1>📄 RP 로그 스플리터</h1>
+    <div class="sub">🧹 OOC 제거 + 턴 검색 + 범위 추출</div>
 
-<!-- 업로드 -->
-<div class="card">
-<div class="upload-area" id="uploadArea">
-<div style="font-size:18px;margin-bottom:4px;">📂</div>
-<div>파일을 선택하세요</div>
-<div style="font-size:13px;color:#94a3b8;">TXT / JSON</div>
-<input type="file" id="fileInput" accept=".txt,.json" />
-</div>
-<div id="fileName" style="font-size:14px;color:#475569;margin-top:8px;"></div>
+    <!-- 업로드 -->
+    <div class="card">
+        <div class="upload-area" id="uploadArea">
+            <label for="fileInput" style="display:block;cursor:pointer;padding:10px;">
+                <div>📂 파일을 선택하세요</div>
+                <div style="font-size:13px;color:#94a3b8;margin-top:6px;">TXT / JSON</div>
+            </label>
+            <input type="file" id="fileInput" accept=".txt,.json" />
+        </div>
+        <div class="file-name" id="fileName"></div>
+        <div class="flex-row">
+            <label><input type="checkbox" id="cleanNoise" checked /> 🧹 노이즈 제거</label>
+            <label><input type="checkbox" id="cleanOOC" checked /> 🗑️ OOC 메타 제거</label>
+        </div>
+        <div class="stats" id="stats">
+            <div>원본 <div class="num" id="origLen">0</div></div>
+            <div>정리 후 <div class="num" id="cleanLen">0</div></div>
+            <div>제거됨 <div class="num" id="removedLen">0</div></div>
+        </div>
+        <button class="btn btn-primary" id="applyCleanBtn" style="width:100%;margin-top:12px;justify-content:center;">✨ 정리 적용하기</button>
+    </div>
 
-<div class="flex-row">
-<label><input type="checkbox" id="cleanOOC" checked /> 🗑️ OOC 제거</label>
-<label><input type="checkbox" id="cleanNoise" checked /> 🧹 노이즈 제거</label>
-</div>
+    <!-- 검색 & 뷰어 -->
+    <div class="card" style="flex:1;">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder='🔍 검색 (예: t30, 40턴, "OOC")' />
+            <button class="btn" id="searchPrevBtn">◀</button>
+            <button class="btn" id="searchNextBtn">▶</button>
+            <button class="btn btn-outline" id="searchClearBtn">✕</button>
+        </div>
+        <div style="font-size:13px;color:#64748b;margin-bottom:6px;">
+            <span id="searchResultInfo">검색 결과: 0개</span>
+        </div>
+        <div class="viewer" id="textViewer">
+            <span style="color:#94a3b8;">📄 파일을 업로드하면 내용이 표시됩니다.</span>
+        </div>
+    </div>
 
-<div class="stats">
-<span>원본: <strong id="origLen">0</strong></span>
-<span>정리 후: <strong id="cleanLen">0</strong></span>
-<span>제거: <strong id="removedLen">0</strong></span>
-</div>
+    <!-- 하단 고정 바 -->
+    <div class="bottom-bar">
+        <div class="row">
+            <button class="btn btn-primary" id="markStartBtn">🔵 시작</button>
+            <button class="btn btn-danger" id="markEndBtn">🔴 끝</button>
+            <button class="btn btn-warning" id="resetMarkersBtn">↺ 초기화</button>
+        </div>
+        <div class="row">
+            <button class="btn btn-success" id="extractBtn" style="flex:2;">✂️ 추출하기</button>
+        </div>
+        <div style="font-size:12px;color:#94a3b8;text-align:center;">
+            시작: <span id="startInfo">없음</span> &nbsp;|&nbsp; 끝: <span id="endInfo">없음</span>
+        </div>
+    </div>
 
-<button class="btn btn-primary" id="applyBtn" style="width:100%;margin-top:12px;">✨ 정리 적용</button>
-</div>
+    <div class="toast" id="toast"></div>
 
-<!-- 검색 & 뷰어 -->
-<div class="card">
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="🔍 턴 검색 (예: t30, 40턴)" />
-<button class="btn" id="searchPrev">◀</button>
-<button class="btn" id="searchNext">▶</button>
-</div>
-<div id="searchInfo" style="font-size:13px;color:#64748b;">검색 결과: 0개</div>
-<div class="viewer" id="viewer">📄 파일을 업로드하면 내용이 표시됩니다.</div>
-</div>
+    <script>
+        (function() {
+            // ===== 상태 =====
+            let rawText = '';
+            let cleanedText = '';
+            let displayText = '';
+            let markers = { start: null, end: null };
+            let searchResults = [];
+            let searchIdx = 0;
 
-<!-- 하단 바 -->
-<div class="bottom-bar">
-<div class="row">
-<button class="btn btn-primary" id="markStart">🔵 시작</button>
-<button class="btn btn-danger" id="markEnd">🔴 끝</button>
-<button class="btn btn-warning" id="resetMarkers">↺ 초기화</button>
-</div>
-<div class="row">
-<button class="btn btn-success" id="extractBtn" style="flex:2;">✂️ 추출하기</button>
-</div>
-<div style="font-size:12px;color:#94a3b8;text-align:center;">
-시작: <span id="startInfo">없음</span> | 끝: <span id="endInfo">없음</span>
-</div>
-</div>
+            // DOM refs
+            const fileInput = document.getElementById('fileInput');
+            const uploadArea = document.getElementById('uploadArea');
+            const fileName = document.getElementById('fileName');
+            const viewer = document.getElementById('textViewer');
+            const origLen = document.getElementById('origLen');
+            const cleanLen = document.getElementById('cleanLen');
+            const removedLen = document.getElementById('removedLen');
+            const searchInput = document.getElementById('searchInput');
+            const searchPrevBtn = document.getElementById('searchPrevBtn');
+            const searchNextBtn = document.getElementById('searchNextBtn');
+            const searchClearBtn = document.getElementById('searchClearBtn');
+            const searchResultInfo = document.getElementById('searchResultInfo');
+            const markStartBtn = document.getElementById('markStartBtn');
+            const markEndBtn = document.getElementById('markEndBtn');
+            const resetMarkersBtn = document.getElementById('resetMarkersBtn');
+            const extractBtn = document.getElementById('extractBtn');
+            const applyCleanBtn = document.getElementById('applyCleanBtn');
+            const startInfo = document.getElementById('startInfo');
+            const endInfo = document.getElementById('endInfo');
+            const toast = document.getElementById('toast');
 
-<div class="toast" id="toast"></div>
+            // 체크박스
+            const cleanNoise = document.getElementById('cleanNoise');
+            const cleanOOC = document.getElementById('cleanOOC');
 
-<script>
-(function() {
-// === 상태 ===
-let rawText = '';
-let cleanedText = '';
-let displayText = '';
-let markers = { start: null, end: null };
-let searchResults = [];
-let searchIdx = 0;
+            // ===== 유틸 =====
+            function showToast(msg, duration = 2000) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toast._hide);
+                toast._hide = setTimeout(() => toast.classList.remove('show'), duration);
+            }
 
-// === DOM ===
-const fileInput = document.getElementById('fileInput');
-const uploadArea = document.getElementById('uploadArea');
-const viewer = document.getElementById('viewer');
-const fileName = document.getElementById('fileName');
-const origLen = document.getElementById('origLen');
-const cleanLen = document.getElementById('cleanLen');
-const removedLen = document.getElementById('removedLen');
-const searchInput = document.getElementById('searchInput');
-const searchPrev = document.getElementById('searchPrev');
-const searchNext = document.getElementById('searchNext');
-const searchInfo = document.getElementById('searchInfo');
-const markStart = document.getElementById('markStart');
-const markEnd = document.getElementById('markEnd');
-const resetMarkers = document.getElementById('resetMarkers');
-const extractBtn = document.getElementById('extractBtn');
-const applyBtn = document.getElementById('applyBtn');
-const cleanOOC = document.getElementById('cleanOOC');
-const cleanNoise = document.getElementById('cleanNoise');
-const startInfo = document.getElementById('startInfo');
-const endInfo = document.getElementById('endInfo');
-const toast = document.getElementById('toast');
+            // ===== 정리 함수 =====
+            function cleanText(text) {
+                let t = text;
+                if (cleanNoise.checked) {
+                    // URL 제거
+                    t = t.replace(/https?:\/\/[^\s]+/g, '');
+                    // 마크다운 이미지
+                    t = t.replace(/!\[.*?\]\(.*?\)/g, '');
+                    // 일반 이미지 태그
+                    t = t.replace(/<img[^>]*>/g, '');
+                    // 주석 (// 한줄)
+                    t = t.replace(/\/\/.*$/gm, '');
+                }
+                if (cleanOOC.checked) {
+                    // OOC 헤더
+                    t = t.replace(/\*\*OOC:.*?\*\*/g, '');
+                    // 대괄호 블록 (여러 줄)
+                    t = t.replace(/\[[^\]]*\][\s\S]*?(?=\n\[|\n\*\*|$)/g, '');
+                    // 슬래시 설명 제거
+                    t = t.replace(/\/\s*[^\/\n]*(?:\/\s*[^\/\n]*)*/g, '');
+                    // 파이프 태그
+                    t = t.replace(/\|[^\|\n]*/g, '');
+                    // Call: 라인
+                    t = t.replace(/Call:.*$/gm, '');
+                }
+                // 연속 줄바꿈 정리
+                t = t.replace(/\n{3,}/g, '\n\n');
+                return t.trim();
+            }
 
-// === 토스트 ===
-function showToast(msg) {
-toast.textContent = msg;
-toast.classList.add('show');
-clearTimeout(toast._hide);
-toast._hide = setTimeout(() => toast.classList.remove('show'), 2000);
-}
+            // ===== 렌더링 =====
+            function render(text, highlightIdx = null) {
+                if (!text) {
+                    viewer.innerHTML = '<span style="color:#94a3b8;">📄 내용이 없습니다.</span>';
+                    return;
+                }
+                let html = escapeHtml(text);
+                // 검색 하이라이트
+                if (searchResults.length > 0 && highlightIdx !== null && highlightIdx >= 0 && highlightIdx < searchResults
+                    .length) {
+                    const keyword = searchInput.value.trim();
+                    if (keyword) {
+                        const regex = new RegExp(escapeRegex(keyword), 'gi');
+                        html = html.replace(regex, match => `<span class="highlight-search">${match}</span>`);
+                    }
+                }
+                viewer.innerHTML = html;
+            }
 
-// === 정리 함수 ===
-function cleanText(text) {
-let t = text;
-if (cleanNoise.checked) {
-t = t.replace(/https?://[^\s]+/g, '');
-t = t.replace(/![.?](.?)/g, '');
-t = t.replace(/<img[^>]>/g, '');
-t = t.replace(///.latex
-/gm, ''); } if (cleanOOC.checked) { t = t.replace(/\*\*OOC:.*?\*\*/g, ''); t = t.replace(/\[[^\]]*\][\s\S]*?(?=\n\[|\n\*\*|
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
 
-)/g, '');
-t = t.replace(//\s*[^/\n](?:/\s[^/\n])/g, '');
-t = t.replace(/|[^|\n]/g, '');
-t = t.replace(/Call:.$`/gm, '');
-}
-t = t.replace(/\n{3,}/g, '\n\n');
-return t.trim();
-}
+            function escapeRegex(str) {
+                return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
 
-// === 렌더링 ===
-function render(text) {
-if (!text) {
-viewer.textContent = '📄 내용이 없습니다.';
-return;
-}
-let html = text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
-// 검색 하이라이트
-const keyword = searchInput.value.trim();
-if (keyword && searchResults.length > 0) {
-const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-html = html.replace(regex, match => <span class="highlight"&gt;${match}</span>`);
-}
-viewer.innerHTML = html;
-}
+            // ===== 파일 읽기 =====
+            function handleFile(file) {
+                if (!file) return;
+                fileName.textContent = `📎 ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    rawText = e.target.result;
+                    applyClean();
+                };
+                reader.readAsText(file);
+            }
 
-// === 파일 처리 ===
-function handleFile(file) {
-if (!file) return;
-fileName.textContent = 📎 ${file.name} (${(file.size/1024).toFixed(1)} KB);
-const reader = new FileReader();
-reader.onload = function(e) {
-rawText = e.target.result;
-applyClean();
-showToast('✅ 파일 로드 완료!');
-};
-reader.onerror = function() {
-showToast('❌ 파일 읽기 실패');
-};
-reader.readAsText(file);
-}
+            function applyClean() {
+                if (!rawText) return;
+                cleanedText = cleanText(rawText);
+                displayText = cleanedText;
+                updateStats();
+                render(displayText);
+                resetMarkers();
+                searchResults = [];
+                searchIdx = 0;
+                updateSearchInfo();
+                showToast('✅ 정리 완료!');
+            }
 
-function applyClean() {
-if (!rawText) {
-showToast('⚠️ 파일을 먼저 업로드하세요.');
-return;
-}
-cleanedText = cleanText(rawText);
-displayText = cleanedText;
-origLen.textContent = rawText.length.toLocaleString();
-cleanLen.textContent = cleanedText.length.toLocaleString();
-removedLen.textContent = (rawText.length - cleanedText.length).toLocaleString();
-render(displayText);
-resetMarkers();
-searchResults = [];
-searchIdx = 0;
-searchInfo.textContent = '검색 결과: 0개';
-showToast('✅ 정리 완료!');
-}
+            function updateStats() {
+                const orig = rawText ? rawText.length : 0;
+                const clean = cleanedText ? cleanedText.length : 0;
+                origLen.textContent = orig.toLocaleString();
+                cleanLen.textContent = clean.toLocaleString();
+                removedLen.textContent = (orig - clean).toLocaleString();
+            }
 
-// === 검색 ===
-function doSearch() {
-const keyword = searchInput.value.trim();
-if (!keyword || !displayText) {
-searchResults = [];
-searchIdx = 0;
-searchInfo.textContent = '검색 결과: 0개';
-render(displayText);
-return;
-}
-const regex = new RegExp(keyword.replace(/[.*+?^latex
-{}()|[\]\\]/g, '\\
+            // ===== 검색 =====
+            function doSearch() {
+                const keyword = searchInput.value.trim();
+                if (!keyword || !displayText) {
+                    searchResults = [];
+                    searchIdx = 0;
+                    updateSearchInfo();
+                    render(displayText);
+                    return;
+                }
+                const regex = new RegExp(escapeRegex(keyword), 'gi');
+                const matches = [...displayText.matchAll(regex)];
+                searchResults = matches.map(m => m.index);
+                searchIdx = 0;
+                updateSearchInfo();
+                if (searchResults.length > 0) {
+                    jumpToSearch(0);
+                } else {
+                    render(displayText);
+                    showToast('🔍 검색 결과가 없습니다.');
+                }
+            }
 
-&'), 'gi');
-const matches = [...displayText.matchAll(regex)];
-searchResults = matches.map(m => m.index);
-searchIdx = 0;
-searchInfo.textContent = 검색 결과: ${searchResults.length}개`;
-if (searchResults.length > 0) {
-jumpToSearch(0);
-} else {
-render(displayText);
-showToast('🔍 검색 결과가 없습니다.');
-}
-}
+            function jumpToSearch(idx) {
+                if (!searchResults.length) return;
+                if (idx < 0) idx = 0;
+                if (idx >= searchResults.length) idx = searchResults.length - 1;
+                searchIdx = idx;
+                const pos = searchResults[idx];
+                // 대략적인 위치로 스크롤 (viewer의 스크롤)
+                const viewerEl = viewer;
+                const text = displayText;
+                // 문자 인덱스로 비율 계산
+                const ratio = pos / text.length;
+                viewerEl.scrollTop = ratio * (viewerEl.scrollHeight - viewerEl.clientHeight);
+                // 렌더링
+                render(displayText, idx);
+                updateSearchInfo();
+                showToast(`🔍 ${idx+1}/${searchResults.length} 번째 검색 결과`);
+            }
 
-function jumpToSearch(idx) {
-if (!searchResults.length) return;
-if (idx < 0) idx = 0;
-if (idx >= searchResults.length) idx = searchResults.length - 1;
-searchIdx = idx;
-const pos = searchResults[idx];
-const ratio = pos / displayText.length;
-viewer.scrollTop = ratio * (viewer.scrollHeight - viewer.clientHeight);
-render(displayText);
-searchInfo.textContent = 검색 결과:${searchResults.length}개 ({searchResults.length}); showToast(🔍 {searchResults.length} 번째`);
-}
+            function updateSearchInfo() {
+                const total = searchResults.length;
+                const cur = total > 0 ? searchIdx + 1 : 0;
+                searchResultInfo.textContent = `검색 결과: ${total}개${total > 0 ? ` (${cur}/${total})` : ''}`;
+            }
 
-// === 마커 ===
-function setMarker(type) {
-if (!displayText) {
-showToast('⚠️ 텍스트가 없습니다.');
-return;
-}
-const ratio = viewer.scrollTop / (viewer.scrollHeight - viewer.clientHeight || 1);
-const idx = Math.floor(ratio * displayText.length);
-markers[type] = Math.min(Math.max(idx, 0), displayText.length - 1);
-startInfo.textContent = markers.start !== null ? 📍 ${markers.start}: '없음'; endInfo.textContent = markers.end !== null ?📍 ${markers.end} : '없음';
-render(displayText);
-showToast(✅ ${type === 'start' ? '시작' : '끝'} 마커 설정`);
-}
+            // ===== 마커 =====
+            function setMarker(type) {
+                if (!displayText) {
+                    showToast('⚠️ 텍스트가 없습니다.');
+                    return;
+                }
+                // 현재 스크롤 위치 기준으로 대략적인 문자 인덱스 계산
+                const viewerEl = viewer;
+                const ratio = viewerEl.scrollTop / (viewerEl.scrollHeight - viewerEl.clientHeight || 1);
+                const idx = Math.floor(ratio * displayText.length);
+                markers[type] = Math.min(Math.max(idx, 0), displayText.length - 1);
+                updateMarkerInfo();
+                render(displayText);
+                showToast(`✅ ${type === 'start' ? '시작' : '끝'} 마커 설정됨 (약 ${Math.floor(idx/displayText.length*100)}%)`);
+            }
 
-function resetMarkers() {
-markers = { start: null, end: null };
-startInfo.textContent = '없음';
-endInfo.textContent = '없음';
-render(displayText);
-}
+            function resetMarkers() {
+                markers = { start: null, end: null };
+                updateMarkerInfo();
+                render(displayText);
+            }
 
-// === 추출 ===
-function extractRange() {
-if (markers.start === null || markers.end === null) {
-showToast('⚠️ 시작과 끝 마커를 먼저 설정하세요.');
-return;
-}
-if (!displayText) {
-showToast('⚠️ 텍스트가 없습니다.');
-return;
-}
-const s = Math.min(markers.start, markers.end);
-const e = Math.max(markers.start, markers.end);
-const extracted = displayText.slice(s, e);
-if (!extracted.trim()) {
-showToast('⚠️ 선택한 범위가 비어있습니다.');
-return;
-}
-const blob = new Blob([extracted], { type: 'text/plain;charset=utf-8' });
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = extracted_${s}-{(extracted.length/1024).toFixed(1)} KB)`);
-}
+            function updateMarkerInfo() {
+                startInfo.textContent = markers.start !== null ? `📍 ${markers.start}` : '없음';
+                endInfo.textContent = markers.end !== null ? `📍 ${markers.end}` : '없음';
+            }
 
-// === 이벤트 ===
-// 파일 업로드
-uploadArea.addEventListener('click', function(e) {
-if (e.target.tagName !== 'INPUT') {
-fileInput.click();
-}
-});
-uploadArea.addEventListener('dragover', function(e) {
-e.preventDefault();
-uploadArea.style.borderColor = '#3b82f6';
-});
-uploadArea.addEventListener('dragleave', function(e) {
-uploadArea.style.borderColor = '#cbd5e1';
-});
-uploadArea.addEventListener('drop', function(e) {
-e.preventDefault();
-uploadArea.style.borderColor = '#cbd5e1';
-if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-});
-fileInput.addEventListener('change', function(e) {
-if (e.target.files.length) handleFile(e.target.files[0]);
-e.target.value = '';
-});
+            // ===== 추출 =====
+            function extractRange() {
+                if (markers.start === null || markers.end === null) {
+                    showToast('⚠️ 시작과 끝 마커를 먼저 설정해주세요.');
+                    return;
+                }
+                if (!displayText) {
+                    showToast('⚠️ 텍스트가 없습니다.');
+                    return;
+                }
+                const s = Math.min(markers.start, markers.end);
+                const e = Math.max(markers.start, markers.end);
+                const extracted = displayText.slice(s, e);
+                if (!extracted.trim()) {
+                    showToast('⚠️ 선택한 범위가 비어있습니다.');
+                    return;
+                }
+                // 다운로드
+                const blob = new Blob([extracted], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const fname = `extracted_${s}-${e}.txt`;
+                a.download = fname;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast(`✅ ${fname} 다운로드 완료! (${(extracted.length/1024).toFixed(1)} KB)`);
+            }
 
-// 버튼
-applyBtn.addEventListener('click', applyClean);
-searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
-searchPrev.addEventListener('click', function() { if (searchResults.length) jumpToSearch(searchIdx - 1); });
-searchNext.addEventListener('click', function() { if (searchResults.length) jumpToSearch(searchIdx + 1); });
-markStart.addEventListener('click', function() { setMarker('start'); });
-markEnd.addEventListener('click', function() { setMarker('end'); });
-resetMarkers.addEventListener('click', resetMarkers);
-extractBtn.addEventListener('click', extractRange);
+            // ===== 이벤트 바인딩 =====
+            // 파일 업로드 (수정된 부분: label과 input 연결)
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    handleFile(this.files[0]);
+                }
+                this.value = ''; // 같은 파일 다시 선택 가능하게
+            });
 
-// 체크박스
-cleanOOC.addEventListener('change', applyClean);
-cleanNoise.addEventListener('change', applyClean);
+            // 드래그 앤 드롭 지원
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault();
+                uploadArea.classList.add('dragover'); });
+            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+            });
 
-// 초기화
-resetMarkers();
-origLen.textContent = '0';
-cleanLen.textContent = '0';
-removedLen.textContent = '0';
-showToast('🚀 준비 완료!');
+            // 정리 적용
+            applyCleanBtn.addEventListener('click', applyClean);
 
-console.log('✅ RP 로그 스플리터 로드됨');
-})();
-</script>
+            // 검색
+            searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+            searchPrevBtn.addEventListener('click', () => {
+                if (searchResults.length) jumpToSearch(searchIdx - 1);
+            });
+            searchNextBtn.addEventListener('click', () => {
+                if (searchResults.length) jumpToSearch(searchIdx + 1);
+            });
+            searchClearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                searchResults = [];
+                searchIdx = 0;
+                updateSearchInfo();
+                render(displayText);
+            });
+
+            // 마커
+            markStartBtn.addEventListener('click', () => setMarker('start'));
+            markEndBtn.addEventListener('click', () => setMarker('end'));
+            resetMarkersBtn.addEventListener('click', resetMarkers);
+
+            // 추출
+            extractBtn.addEventListener('click', extractRange);
+
+            // 초기화
+            resetMarkers();
+            updateStats();
+
+            // 추가: 체크박스 변경 시 자동 적용
+            cleanNoise.addEventListener('change', applyClean);
+            cleanOOC.addEventListener('change', applyClean);
+
+            console.log('✅ RP 로그 스플리터 로드 완료!');
+        })();
+    </script>
 </body>
 </html>
+```
