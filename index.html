@@ -28,17 +28,29 @@
         .btn-danger{background:#ef4444;color:white}
         .btn-warning{background:#f59e0b;color:white}
         .btn-outline{background:transparent;border:1.5px solid #cbd5e1}
-        .viewer{background:#ffffff;border-radius:16px;padding:16px;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:15px;line-height:1.8;border:1px solid #e9edf2;font-family:'SF Mono','Courier New',monospace;margin-top:8px}
+        .btn-active-start{background:#2563eb !important;color:white;transform:scale(1.05);box-shadow:0 0 0 3px rgba(59,130,246,0.4)}
+        .btn-active-end{background:#dc2626 !important;color:white;transform:scale(1.05);box-shadow:0 0 0 3px rgba(239,68,68,0.4)}
+        .viewer{background:#ffffff;border-radius:16px;padding:16px;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;font-size:15px;line-height:1.8;border:1px solid #e9edf2;font-family:'SF Mono','Courier New',monospace;margin-top:8px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;cursor:pointer}
         .viewer .highlight-search{background:#fef08a;border-radius:4px;padding:0 2px}
         .viewer .marker-start{background:#bfdbfe;border-left:4px solid #2563eb;padding:2px 6px;border-radius:4px;font-weight:bold;color:#1e4d8c}
         .viewer .marker-end{background:#fecaca;border-left:4px solid #dc2626;padding:2px 6px;border-radius:4px;font-weight:bold;color:#991b1b}
+        .viewer .marker-both{background:linear-gradient(90deg, #bfdbfe 0%, #fecaca 100%);border-left:4px solid #7c3aed;padding:2px 6px;border-radius:4px;font-weight:bold;color:#5b21b6}
+        .marker-info{font-size:13px;color:#64748b;margin-top:4px;text-align:center;display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+        .marker-info span{padding:4px 12px;background:#f1f4f9;border-radius:20px}
+        .marker-info .active-start{border:2px solid #3b82f6;background:#eff6ff}
+        .marker-info .active-end{border:2px solid #ef4444;background:#fef2f2}
         .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:12px 16px 20px;border-top:1px solid #e2e8f0;box-shadow:0 -4px 12px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:8px;max-width:600px;margin:0 auto}
         .bottom-bar .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
         .bottom-bar .row .btn{flex:1;justify-content:center;min-width:60px}
         .file-name{font-size:14px;color:#475569;margin-top:6px;word-break:break-all}
         .toast{background:#0f172a;color:white;padding:10px 18px;border-radius:40px;font-size:14px;position:fixed;bottom:100px;left:50%;transform:translateX(-50%);opacity:0;transition:0.25s;pointer-events:none;white-space:nowrap;z-index:999}
         .toast.show{opacity:1}
-        @media(max-width:480px){.stats{grid-template-columns:1fr 1fr}.bottom-bar .row .btn{font-size:12px;padding:8px 10px}}
+        .marker-preview{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px;font-size:13px;margin-top:8px;max-height:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#475569}
+        .marker-preview .highlight-char{background:#fbbf24;padding:1px 3px;border-radius:3px;font-weight:bold;color:#1e293b}
+        @media(max-width:480px){
+            .stats{grid-template-columns:1fr 1fr}
+            .bottom-bar .row .btn{font-size:12px;padding:8px 10px}
+        }
     </style>
 </head>
 <body>
@@ -69,7 +81,7 @@
 
     <div class="card" style="flex:1;">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder='🔍 검색 (예: t30, 40턴)' />
+            <input type="text" id="searchInput" placeholder='🔍 검색 (예: t30, 40턴, 전투)' />
             <button class="btn" id="searchPrevBtn">◀</button>
             <button class="btn" id="searchNextBtn">▶</button>
             <button class="btn btn-outline" id="searchClearBtn">✕</button>
@@ -80,19 +92,28 @@
         <div class="viewer" id="textViewer">
             <span style="color:#94a3b8;">📄 파일을 업로드하면 내용이 표시됩니다.</span>
         </div>
+        <div class="marker-preview" id="markerPreview">
+            💡 탭해서 마커를 설정하세요
+        </div>
+        <div class="marker-info">
+            <span id="startInfoBadge">🔵 시작: 없음</span>
+            <span id="endInfoBadge">🔴 끝: 없음</span>
+        </div>
     </div>
 
     <div class="bottom-bar">
         <div class="row">
-            <button class="btn btn-primary" id="markStartBtn">🔵 시작</button>
-            <button class="btn btn-danger" id="markEndBtn">🔴 끝</button>
+            <button class="btn btn-primary btn-active-start" id="markStartBtn">🔵 시작 모드</button>
+            <button class="btn btn-danger" id="markEndBtn">🔴 끝 모드</button>
             <button class="btn btn-warning" id="resetMarkersBtn">↺ 초기화</button>
         </div>
         <div class="row">
-            <button class="btn btn-success" id="extractBtn" style="flex:2;">✂️ 추출하기</button>
+            <button class="btn btn-outline" id="undoMarkerBtn">↩ 되돌리기</button>
+            <button class="btn btn-outline" id="moveUpBtn">▲ 위로</button>
+            <button class="btn btn-outline" id="moveDownBtn">▼ 아래로</button>
         </div>
-        <div style="font-size:12px;color:#94a3b8;text-align:center;">
-            시작: <span id="startInfo">없음</span> &nbsp;|&nbsp; 끝: <span id="endInfo">없음</span>
+        <div class="row">
+            <button class="btn btn-success" id="extractBtn" style="flex:2;">✂️ 추출하기</button>
         </div>
     </div>
 
@@ -104,8 +125,10 @@
             let cleanedText = '';
             let displayText = '';
             let markers = { start: null, end: null };
+            let markerMode = 'start';
             let searchResults = [];
             let searchIdx = 0;
+            let markerHistory = [];
 
             const fileInput = document.getElementById('fileInput');
             const uploadArea = document.getElementById('uploadArea');
@@ -124,8 +147,12 @@
             const resetMarkersBtn = document.getElementById('resetMarkersBtn');
             const extractBtn = document.getElementById('extractBtn');
             const applyCleanBtn = document.getElementById('applyCleanBtn');
-            const startInfo = document.getElementById('startInfo');
-            const endInfo = document.getElementById('endInfo');
+            const startInfoBadge = document.getElementById('startInfoBadge');
+            const endInfoBadge = document.getElementById('endInfoBadge');
+            const markerPreview = document.getElementById('markerPreview');
+            const undoMarkerBtn = document.getElementById('undoMarkerBtn');
+            const moveUpBtn = document.getElementById('moveUpBtn');
+            const moveDownBtn = document.getElementById('moveDownBtn');
             const toast = document.getElementById('toast');
             const cleanNoise = document.getElementById('cleanNoise');
             const cleanOOC = document.getElementById('cleanOOC');
@@ -137,64 +164,149 @@
                 toast._hide = setTimeout(() => toast.classList.remove('show'), duration);
             }
 
-            // ===== 정리 함수 (OOC 블록 통째로 제거) =====
+            function updateMarkerModeUI() {
+                markStartBtn.classList.toggle('btn-active-start', markerMode === 'start');
+                markEndBtn.classList.toggle('btn-active-end', markerMode === 'end');
+                startInfoBadge.className = markerMode === 'start' ? 'active-start' : '';
+                endInfoBadge.className = markerMode === 'end' ? 'active-end' : '';
+            }
+
+            function updateMarkerDisplay() {
+                startInfoBadge.textContent = markers.start !== null ? `🔵 시작: ${markers.start}` : '🔵 시작: 없음';
+                endInfoBadge.textContent = markers.end !== null ? `🔴 끝: ${markers.end}` : '🔴 끝: 없음';
+                if (markers.start !== null && markers.end !== null) {
+                    const rangeSize = Math.abs(markers.end - markers.start);
+                    showToast(`📏 선택 범위: ${rangeSize.toLocaleString()} 글자`);
+                }
+            }
+
+            function saveMarkerState() {
+                markerHistory.push({ start: markers.start, end: markers.end });
+                if (markerHistory.length > 20) markerHistory.shift();
+            }
+
+            function setMarkerAtPosition(pos) {
+                if (!displayText || pos < 0 || pos >= displayText.length) return;
+                saveMarkerState();
+                markers[markerMode] = pos;
+                updateMarkerDisplay();
+                showMarkerPreview(pos);
+                render(displayText);
+                const emoji = markerMode === 'start' ? '🔵' : '🔴';
+                const label = markerMode === 'start' ? '시작' : '끝';
+                showToast(`${emoji} ${label} 마커 설정 (위치: ${pos})`);
+                const ratio = pos / displayText.length;
+                viewer.scrollTop = ratio * (viewer.scrollHeight - viewer.clientHeight);
+            }
+
+            function showMarkerPreview(pos) {
+                const context = 40;
+                const start = Math.max(0, pos - context);
+                const end = Math.min(displayText.length, pos + context);
+                let before = displayText.slice(start, pos).replace(/\n/g, '↵ ');
+                let at = displayText.charAt(pos) || ' ';
+                let after = displayText.slice(pos + 1, end).replace(/\n/g, '↵ ');
+                if (at === '\n') at = '↵';
+                markerPreview.innerHTML = `
+                    <span style="color:#94a3b8;">...${before}</span>
+                    <span class="highlight-char">${at}</span>
+                    <span style="color:#94a3b8;">${after}...</span>
+                `;
+            }
+
+            function moveMarker(delta) {
+                const current = markers[markerMode];
+                if (current === null) {
+                    showToast('⚠️ 먼저 마커를 설정하세요');
+                    return;
+                }
+                const newPos = Math.max(0, Math.min(displayText.length - 1, current + delta));
+                if (newPos === current) return;
+                saveMarkerState();
+                markers[markerMode] = newPos;
+                updateMarkerDisplay();
+                showMarkerPreview(newPos);
+                render(displayText);
+                const ratio = newPos / displayText.length;
+                viewer.scrollTop = ratio * (viewer.scrollHeight - viewer.clientHeight);
+            }
+
+            function undoMarker() {
+                if (markerHistory.length === 0) {
+                    showToast('⚠️ 되돌릴 작업이 없습니다');
+                    return;
+                }
+                const prev = markerHistory.pop();
+                markers.start = prev.start;
+                markers.end = prev.end;
+                updateMarkerDisplay();
+                render(displayText);
+                const currentMarker = markers[markerMode];
+                if (currentMarker !== null) {
+                    showMarkerPreview(currentMarker);
+                }
+                showToast('↩ 마커 되돌리기 완료');
+            }
+
             function cleanText(text) {
                 let t = text;
-
                 if (cleanNoise.checked) {
                     t = t.replace(/https?:\/\/[^\s]+/g, '');
                     t = t.replace(/!\[.*?\]\(.*?\)/g, '');
                     t = t.replace(/<img[^>]*>/g, '');
                     t = t.replace(/\/\/.*$/gm, '');
                 }
-
                 if (cleanOOC.checked) {
-                    // OOC 블록 통째로 제거 (여러 줄 포함)
                     t = t.replace(/\*\*OOC:[\s\S]*?\*\*/g, '');
                 }
-
                 t = t.replace(/\n{3,}/g, '\n\n');
                 return t.trim();
             }
 
-            // ===== 렌더링 =====
             function render(text) {
                 if (!text) {
                     viewer.innerHTML = '<span style="color:#94a3b8;">📄 내용이 없습니다.</span>';
                     return;
                 }
-
                 let html = text
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
-
                 const keyword = searchInput.value.trim();
                 if (keyword && searchResults.length > 0) {
                     const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
                     html = html.replace(regex, match => `<span class="highlight-search">${match}</span>`);
                 }
-
-                if (markers.start !== null && markers.start < html.length) {
+                if (markers.start !== null && markers.end !== null && markers.start === markers.end) {
                     const pos = markers.start;
-                    html = html.slice(0, pos) + `<span class="marker-start">▶ START</span>` + html.slice(pos);
+                    if (pos < html.length) {
+                        html = html.slice(0, pos) + `<span class="marker-both">▶◀ START/END</span>` + html.slice(pos);
+                    }
+                } else {
+                    if (markers.start !== null && markers.start < html.length) {
+                        const pos = markers.start;
+                        html = html.slice(0, pos) + `<span class="marker-start">▶ START</span>` + html.slice(pos);
+                    }
+                    if (markers.end !== null && markers.end < html.length) {
+                        const pos = markers.end;
+                        html = html.slice(0, pos) + `<span class="marker-end">◀ END</span>` + html.slice(pos);
+                    }
                 }
-
-                if (markers.end !== null && markers.end < html.length) {
-                    const pos = markers.end;
-                    html = html.slice(0, pos) + `<span class="marker-end">◀ END</span>` + html.slice(pos);
-                }
-
                 viewer.innerHTML = html;
             }
 
-            // ===== 파일 처리 =====
             function handleFile(file) {
                 if (!file) return;
                 fileName.textContent = `📎 ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    rawText = e.target.result;
+                    const content = e.target.result;
+                    try {
+                        const json = JSON.parse(content);
+                        rawText = json.text || json.content || json.log || json.data || content;
+                    } catch {
+                        rawText = content;
+                    }
                     applyClean();
                     showToast('✅ 파일 로드 완료!');
                 };
@@ -214,15 +326,17 @@
                 origLen.textContent = rawText.length.toLocaleString();
                 cleanLen.textContent = cleanedText.length.toLocaleString();
                 removedLen.textContent = (rawText.length - cleanedText.length).toLocaleString();
-                render(displayText);
-                resetMarkers();
+                markers = { start: null, end: null };
+                markerHistory = [];
                 searchResults = [];
                 searchIdx = 0;
                 searchResultInfo.textContent = '검색 결과: 0개';
+                markerPreview.innerHTML = '💡 탭해서 마커를 설정하세요';
+                updateMarkerDisplay();
+                render(displayText);
                 showToast('✅ 정리 완료!');
             }
 
-            // ===== 검색 =====
             function doSearch() {
                 const keyword = searchInput.value.trim();
                 if (!keyword || !displayText) {
@@ -251,6 +365,7 @@
                 if (idx >= searchResults.length) idx = searchResults.length - 1;
                 searchIdx = idx;
                 const pos = searchResults[idx];
+                showMarkerPreview(pos);
                 const ratio = pos / displayText.length;
                 viewer.scrollTop = ratio * (viewer.scrollHeight - viewer.clientHeight);
                 render(displayText);
@@ -258,29 +373,6 @@
                 showToast(`🔍 ${idx+1}/${searchResults.length} 번째`);
             }
 
-            // ===== 마커 =====
-            function setMarker(type) {
-                if (!displayText) {
-                    showToast('⚠️ 텍스트가 없습니다.');
-                    return;
-                }
-                const ratio = viewer.scrollTop / (viewer.scrollHeight - viewer.clientHeight || 1);
-                const idx = Math.floor(ratio * displayText.length);
-                markers[type] = Math.min(Math.max(idx, 0), displayText.length - 1);
-                startInfo.textContent = markers.start !== null ? `📍 ${markers.start}` : '없음';
-                endInfo.textContent = markers.end !== null ? `📍 ${markers.end}` : '없음';
-                render(displayText);
-                showToast(`✅ ${type === 'start' ? '시작' : '끝'} 마커 설정`);
-            }
-
-            function resetMarkers() {
-                markers = { start: null, end: null };
-                startInfo.textContent = '없음';
-                endInfo.textContent = '없음';
-                render(displayText);
-            }
-
-            // ===== 추출 =====
             function extractRange() {
                 if (markers.start === null || markers.end === null) {
                     showToast('⚠️ 시작과 끝 마커를 먼저 설정하세요.');
@@ -309,7 +401,15 @@
                 showToast(`✅ 추출 완료! (${(extracted.length/1024).toFixed(1)} KB)`);
             }
 
-            // ===== 이벤트 =====
+            viewer.addEventListener('click', function(e) {
+                if (!displayText) return;
+                const rect = viewer.getBoundingClientRect();
+                const y = e.clientY - rect.top + viewer.scrollTop;
+                const ratio = y / viewer.scrollHeight;
+                const pos = Math.floor(ratio * displayText.length);
+                setMarkerAtPosition(Math.min(Math.max(pos, 0), displayText.length - 1));
+            });
+
             fileInput.addEventListener('change', function(e) {
                 if (this.files && this.files[0]) {
                     handleFile(this.files[0]);
@@ -317,8 +417,7 @@
                 this.value = '';
             });
 
-            uploadArea.addEventListener('dragover', (e) => { e.preventDefault();
-                uploadArea.classList.add('dragover'); });
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
             uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
             uploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
@@ -327,6 +426,9 @@
             });
 
             applyCleanBtn.addEventListener('click', applyClean);
+            cleanNoise.addEventListener('change', applyClean);
+            cleanOOC.addEventListener('change', applyClean);
+
             searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
             searchPrevBtn.addEventListener('click', () => { if (searchResults.length) jumpToSearch(searchIdx - 1); });
             searchNextBtn.addEventListener('click', () => { if (searchResults.length) jumpToSearch(searchIdx + 1); });
@@ -337,19 +439,67 @@
                 searchResultInfo.textContent = '검색 결과: 0개';
                 render(displayText);
             });
-            markStartBtn.addEventListener('click', () => setMarker('start'));
-            markEndBtn.addEventListener('click', () => setMarker('end'));
-            resetMarkersBtn.addEventListener('click', resetMarkers);
-            extractBtn.addEventListener('click', extractRange);
-            cleanNoise.addEventListener('change', applyClean);
-            cleanOOC.addEventListener('change', applyClean);
 
-            resetMarkers();
+            markStartBtn.addEventListener('click', function() {
+                markerMode = 'start';
+                updateMarkerModeUI();
+                showToast('🔵 시작 마커 모드 - 텍스트를 탭하세요');
+                if (markers.start !== null) showMarkerPreview(markers.start);
+            });
+
+            markEndBtn.addEventListener('click', function() {
+                markerMode = 'end';
+                updateMarkerModeUI();
+                showToast('🔴 끝 마커 모드 - 텍스트를 탭하세요');
+                if (markers.end !== null) showMarkerPreview(markers.end);
+            });
+
+            resetMarkersBtn.addEventListener('click', () => {
+                saveMarkerState();
+                markers = { start: null, end: null };
+                markerHistory = [];
+                updateMarkerDisplay();
+                markerPreview.innerHTML = '💡 탭해서 마커를 설정하세요';
+                render(displayText);
+                showToast('↺ 마커 초기화 완료');
+            });
+
+            undoMarkerBtn.addEventListener('click', undoMarker);
+
+            moveUpBtn.addEventListener('click', () => moveMarker(-50));
+            moveDownBtn.addEventListener('click', () => moveMarker(50));
+
+            extractBtn.addEventListener('click', extractRange);
+
+            document.addEventListener('keydown', function(e) {
+                if (!displayText) return;
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    markerMode = 'start';
+                    updateMarkerModeUI();
+                    showToast('🔵 시작 마커 모드');
+                }
+                if (e.ctrlKey && e.key === 'e') {
+                    e.preventDefault();
+                    markerMode = 'end';
+                    updateMarkerModeUI();
+                    showToast('🔴 끝 마커 모드');
+                }
+                if (markers[markerMode] !== null) {
+                    if (e.key === 'ArrowLeft') { e.preventDefault(); moveMarker(-1); }
+                    if (e.key === 'ArrowRight') { e.preventDefault(); moveMarker(1); }
+                    if (e.key === 'ArrowUp') { e.preventDefault(); moveMarker(-100); }
+                    if (e.key === 'ArrowDown') { e.preventDefault(); moveMarker(100); }
+                }
+            });
+
+            updateMarkerModeUI();
+            updateMarkerDisplay();
             origLen.textContent = '0';
             cleanLen.textContent = '0';
             removedLen.textContent = '0';
-            showToast('🚀 준비 완료!');
-            console.log('✅ RP 로그 스플리터 로드됨');
+            showToast('🚀 준비 완료! 탭으로 마커를 설정하세요');
+            console.log('✅ RP 로그 스플리터 v2.0 로드됨 - 탭 마커 모드');
         })();
     </script>
 </body>
